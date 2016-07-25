@@ -62,6 +62,44 @@ You can take a look at official WireMock page for more details on how to structu
 
 ## How to build
 
+### Bundle plugin setup
+
+In order to use (share) resources among other projects (JSON and properties file) you need to configure maven plugin.
+
+```
+<build>
+  	<resources>            
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <resourcesDirectory>${basedir}/src/main/resources</resourcesDirectory>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+  </build>
+```
+
+This plugin makes a _bundle_ with all files and folders that are in `src/main/resources/` folder.
+
+### Build
+
 Build is done using simple maven command:
 
 `mvn clean install`
@@ -70,7 +108,41 @@ it will execute tests and create .jar file.
 
 ## How to use
 
-This is intended to be used as maven dependency. You can create .jar file and then place it on your internal maven repository and then reuse in different projects as maven dependency.
+`JAR` file that is generated can be used:
+
+* locally (if `mvn clean install` command is execute in machine, then output jar file is stored in local `.m2` folder and it can be reused as dependency)
+* globally - if it is stored in hosted maven repository
+
+In either way, you must configure _remote-resources_ plugin on target project.
+
+```
+<build>
+  <plugins>
+  <plugin>        
+    <artifactId>maven-remote-resources-plugin</artifactId>
+    <version>1.5</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>process</goal>
+            </goals>
+            <configuration>
+                <resourceBundles>
+                    <resourceBundle>lukastosic.mocks:MockService:0.2.3</resourceBundle>
+                </resourceBundles>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+</plugins>
+  </build>
+```
+
+This will place everything that was bundled in mocservice project (`scr/main/resources`) and it will place it under `target/maven-shared-archive-resources` (also it will be placed inside `target/classes`).
+
+So in order to startup mock server we must provide it with path to `target/maven-shared-archive-resources` to find properties and JSON files.
+
+That is why in MockService method `LoadMappingOptions(boolean defaultPluginUsage)` has that boolean parameter. If set to true - mock server will look into that folder.
 
 ### How to initialize mock in JAVA code (JUnit)
 
@@ -81,7 +153,7 @@ MockService mockService = new MockService();
 mockService.StartMockServer();
 
 // Load properties file:
-mockService.LoadMappingOptions();
+mockService.LoadMappingOptions(true);
 
 // Show list of possible mock services
 ArrayList<String> options = mockService.ShowMappingOptions();
@@ -107,14 +179,14 @@ Host is always `localhost`.
 
 As mentioned above, default constructor will use dynamic ports
 
-Default method `LoadMappingOptions()` will use default properties file location and default root folder for mocking definitions.
+Default method `LoadMappingOptions(true)` will use default properties file location and default root folder for mocking definitions.
 
 If you want to use different options you can use:
 
 ```
-String fileProperties = "src/main/resources/mappings/mappings.properties";
+String fileProperties = "target/maven-shared-archive-resources/some_other_path";
 	
-String mappingRootFolder = "src/main/resources/mappings/";
+String mappingRootFolder = "target/maven-shared-archive-resources/some_other_path";
 
 mockService.LoadMappingOptions(fileProperties,mappingRootFolder);
 ```
