@@ -1,4 +1,4 @@
-package ls.mocks;
+package lukastosic.mocks;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,15 +8,19 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 
-public class MappingOptions {
-
-	private String fileProperties = "src/main/resources/mappings/mappings.properties";
+public class MappingOptions {	
+		
+	private String fileProperties = "mappings/mappings.properties";
 	
-	private String pathPrefix = "src/main/resources/mappings/";
+	private String pathPrefix = "mappings/";
 	
 	public ArrayList<MappingOption> mappings = new ArrayList<MappingOption>();
 	
-	public MappingOptions() {
+	public MappingOptions(boolean defaultPluginUsage) {
+		if(defaultPluginUsage) {
+			fileProperties = "target/maven-shared-archive-resources/mappings/mappings.properties";
+			pathPrefix = "target/maven-shared-archive-resources/mappings/";
+		}
 		LoadMappingsFromPropertiesFile();
 	}
 	
@@ -32,9 +36,11 @@ public class MappingOptions {
 		LoadMappingsFromPropertiesFile();
 	}
 	
-	private void LoadMappingsFromPropertiesFile() {	
-		try {
+	public void LoadMappingsFromPropertiesFile() {	
+		try {			
+			
 			File file = new File(fileProperties);
+			System.out.println(file.getAbsolutePath());
 			FileInputStream fileInput = new FileInputStream(file);
 			Properties properties = new Properties();
 			properties.load(fileInput);

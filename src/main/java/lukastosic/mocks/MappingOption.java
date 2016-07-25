@@ -1,4 +1,4 @@
-package ls.mocks;
+package lukastosic.mocks;
 
 public class MappingOption {
 	private String option;

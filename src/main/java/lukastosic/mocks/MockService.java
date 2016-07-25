@@ -1,4 +1,4 @@
-package ls.mocks;
+package lukastosic.mocks;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.SingleRootFileSource;
@@ -34,7 +34,7 @@ public class MockService {
 	}
 	
 	public MockService(String address, int port, int httpsPort) {
-		wireMockServer = new WireMockServer(wireMockConfig().port(port).httpsPort(httpsPort));		
+		wireMockServer = new WireMockServer(wireMockConfig().bindAddress(address).port(port).httpsPort(httpsPort));		
 	}
 	
 	public WireMockServer GetWireMockInstance() {
@@ -67,13 +67,14 @@ public class MockService {
 		wireMockServer.stop();
 	}
 	
-	public void LoadMapppingOptions() {
-		mappingOptions = new MappingOptions();		
+	
+	public void LoadMapppingOptions(boolean defaultPluginUsage) {
+		mappingOptions = new MappingOptions(defaultPluginUsage);		
 	}
 	
 	public void LoadMappingOptions(String pathToPropertiesFile, String pathPrefixOfMappings) {
 		mappingOptions = new MappingOptions(pathToPropertiesFile, pathPrefixOfMappings);
-	}
+	}	
 	
 	public ArrayList<String> ShowMappingOptions() {
 		ArrayList<String> options = new ArrayList<String>();

@@ -1,4 +1,4 @@
-package ls.mocks;
+package lukastosic.mocks;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import lukastosic.mocks.MockService;
 
 /**
  * Unit test for simple App.
