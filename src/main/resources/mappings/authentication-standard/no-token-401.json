@@ -1,0 +1,9 @@
+{
+  "request": {
+	"url": "/verify",
+	"method": "POST"
+  },
+  "response": {
+	"status": 401
+  }
+}

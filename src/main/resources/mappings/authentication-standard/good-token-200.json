@@ -1,0 +1,14 @@
+{
+  "request": {
+	"url": "/verify",
+	"method": "POST",
+	"headers": {
+	  "Token": {
+		"equalTo": "good-token"
+	  }
+	}
+  },
+  "response": {
+	"status": 200
+  }
+}

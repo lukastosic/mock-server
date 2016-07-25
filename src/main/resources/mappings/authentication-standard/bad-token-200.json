@@ -1,0 +1,15 @@
+{
+  "request": {
+	"url": "/verify",
+	"method": "POST",
+	"headers": {
+	  "Token": {
+		"equalTo": "bad-token"
+	  }
+	}
+  },
+  "response": {
+	"status": 403
+  }
+}
+  
